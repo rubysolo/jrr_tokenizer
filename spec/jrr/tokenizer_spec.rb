@@ -45,11 +45,11 @@ RSpec.describe Jrr::Tokenizer do
 
     tokens = tokenizer.tokenize('if(-5 > x, -7, -8) - 9')
     expect(tokens.map(&:category)).to eq([
-      :function, :grouping,                                      # if(
+      :function, :grouping,                                                          # if(
       :arithmetic_operator, :numeric, :comparison_operator, :identifier, :grouping,  # -5 > x,
-      :arithmetic_operator, :numeric, :grouping,                            # -7,
-      :arithmetic_operator, :numeric, :grouping,                            # -8)
-      :arithmetic_operator, :numeric                                        # - 9
+      :arithmetic_operator, :numeric, :grouping,                                     # -7,
+      :arithmetic_operator, :numeric, :grouping,                                     # -8)
+      :arithmetic_operator, :numeric                                                 # - 9
     ])
     expect(tokens.map(&:value)).to eq([
       :if, :open,                   # if(

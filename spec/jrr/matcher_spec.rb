@@ -11,31 +11,31 @@ RSpec.describe Jrr::Matcher do
   end
 
   it 'with multiple categories matches any included token category' do
-    matcher    = described_class.new([:comparator, :operator])
+    matcher    = described_class.new([:comparison_operator, :arithmetic_operator])
     numeric    = Jrr::Token.new(:numeric, 5)
-    comparator = Jrr::Token.new(:comparator, :lt)
-    operator   = Jrr::Token.new(:operator, :add)
+    comparison_operator = Jrr::Token.new(:comparison_operator, :lt)
+    operator   = Jrr::Token.new(:arithmetic_operator, :add)
 
-    expect(matcher).to eq(comparator)
+    expect(matcher).to eq(comparison_operator)
     expect(matcher).to eq(operator)
     expect(matcher).not_to eq(numeric)
   end
 
   it 'with single category and value matches token category and value' do
-    matcher     = described_class.new(:operator, :add)
-    addition    = Jrr::Token.new(:operator, :add)
-    subtraction = Jrr::Token.new(:operator, :subtract)
+    matcher     = described_class.new(:arithmetic_operator, :add)
+    addition    = Jrr::Token.new(:arithmetic_operator, :add)
+    subtraction = Jrr::Token.new(:arithmetic_operator, :subtract)
 
     expect(matcher).to eq(addition)
     expect(matcher).not_to eq(subtraction)
   end
 
   it 'with multiple values matches any included token value' do
-    matcher = described_class.new(:operator, [:add, :subtract])
-    add = Jrr::Token.new(:operator, :add)
-    sub = Jrr::Token.new(:operator, :subtract)
-    mul = Jrr::Token.new(:operator, :multiply)
-    div = Jrr::Token.new(:operator, :divide)
+    matcher = described_class.new(:arithmetic_operator, [:add, :subtract])
+    add = Jrr::Token.new(:arithmetic_operator, :add)
+    sub = Jrr::Token.new(:arithmetic_operator, :subtract)
+    mul = Jrr::Token.new(:arithmetic_operator, :multiply)
+    div = Jrr::Token.new(:arithmetic_operator, :divide)
 
     expect(matcher).to eq(add)
     expect(matcher).to eq(sub)
@@ -44,10 +44,10 @@ RSpec.describe Jrr::Matcher do
   end
 
   it 'is invertible' do
-    matcher = described_class.new(:operator, [:add, :subtract]).invert
-    add = Jrr::Token.new(:operator, :add)
-    mul = Jrr::Token.new(:operator, :multiply)
-    cmp = Jrr::Token.new(:comparator, :lt)
+    matcher = described_class.new(:arithmetic_operator, [:add, :subtract]).invert
+    add = Jrr::Token.new(:arithmetic_operator, :add)
+    mul = Jrr::Token.new(:arithmetic_operator, :multiply)
+    cmp = Jrr::Token.new(:comparison_operator, :lt)
 
     expect(matcher).not_to eq(add)
     expect(matcher).to eq(mul)
@@ -59,18 +59,18 @@ RSpec.describe Jrr::Matcher do
     let(:string)  { described_class.new(:string) }
 
     it 'matches either' do
-      either = numeric | string
-      expect(either).to eq(Jrr::Token.new(:numeric, 5))
-      expect(either).to eq(Jrr::Token.new(:string, 'rhubarb'))
+      either_matcher = numeric | string
+      expect(either_matcher).to eq(Jrr::Token.new(:numeric, 5))
+      expect(either_matcher).to eq(Jrr::Token.new(:string, 'rhubarb'))
     end
 
     it 'matches any value' do
-      value = described_class.value
-      expect(value).to eq(Jrr::Token.new(:numeric, 8))
-      expect(value).to eq(Jrr::Token.new(:string, 'apricot'))
-      expect(value).to eq(Jrr::Token.new(:logical, false))
-      expect(value).not_to eq(Jrr::Token.new(:function, :round))
-      expect(value).not_to eq(Jrr::Token.new(:identifier, :hello))
+      value_matcher = described_class.value
+      expect(value_matcher).to eq(Jrr::Token.new(:numeric, 8))
+      expect(value_matcher).to eq(Jrr::Token.new(:string, 'apricot'))
+      expect(value_matcher).to eq(Jrr::Token.new(:boolean, false))
+      expect(value_matcher).not_to eq(Jrr::Token.new(:function, :round))
+      expect(value_matcher).not_to eq(Jrr::Token.new(:identifier, :hello))
     end
   end
 
@@ -149,17 +149,17 @@ RSpec.describe Jrr::Matcher do
     when String
       :string
     when true, false
-      :logical
+      :boolean
     when :add, :subtract, :multiply, :divide, :mod, :pow
-      :operator
+      :arithmetic_operator
     when :open, :close, :comma
       :grouping
     when :lbracket, :rbracket
       :access
     when :le, :ge, :ne, :ne, :lt, :gt, :eq
-      :comparator
+      :comparison_operator
     when :and, :or
-      :combinator
+      :boolean_operator
     when :if, :round, :roundup, :rounddown, :not
       :function
     else

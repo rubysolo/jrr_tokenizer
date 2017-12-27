@@ -93,39 +93,40 @@ module Jrr
       @values.empty? || @values.key?(value)
     end
 
-    def self.datetime;       new(:datetime);                       end
-    def self.numeric;        new(:numeric);                        end
-    def self.string;         new(:string);                         end
-    def self.logical;        new(:logical);                        end
+    def self.datetime;            new(:datetime);                       end
+    def self.numeric;             new(:numeric);                        end
+    def self.string;              new(:string);                         end
+    def self.boolean;             new(:boolean);                        end
     def self.value
-      new(:datetime) | new(:numeric) | new(:string) | new(:logical)
+      new(:datetime) | new(:numeric) | new(:string) | new(:boolean)
     end
 
-    def self.addsub;         new(:operator, [:add, :subtract]);    end
-    def self.subtract;       new(:operator, :subtract);            end
-    def self.anchored_minus; new(:operator, :subtract).caret;      end
-    def self.muldiv;         new(:operator, [:multiply, :divide]); end
-    def self.pow;            new(:operator, :pow);                 end
-    def self.mod;            new(:operator, :mod);                 end
-    def self.combinator;     new(:combinator);                     end
+    def self.addsub;              new(:arithmetic_operator, [:add, :subtract]);    end
+    def self.subtract;            new(:arithmetic_operator, :subtract);            end
+    def self.anchored_minus;      new(:arithmetic_operator, :subtract).caret;      end
+    def self.muldiv;              new(:arithmetic_operator, [:multiply, :divide]); end
+    def self.pow;                 new(:arithmetic_operator, :pow);                 end
+    def self.mod;                 new(:arithmetic_operator, :mod);                 end
 
-    def self.comparator;     new(:comparator);                     end
-    def self.comp_gt;        new(:comparator, [:gt, :ge]);         end
-    def self.comp_lt;        new(:comparator, [:lt, :le]);         end
+    def self.boolean_operator;    new(:boolean_operator);                end
 
-    def self.open;           new(:grouping, :open);                end
-    def self.close;          new(:grouping, :close);               end
-    def self.comma;          new(:grouping, :comma);               end
-    def self.non_group;      new(:grouping).invert;                end
-    def self.non_group_star; new(:grouping).invert.star;           end
-    def self.non_close_plus; new(:grouping, :close).invert.plus;   end
-    def self.arguments;      (value | comma).plus;                 end
+    def self.comparison_operator; new(:comparison_operator);             end
+    def self.comp_gt;             new(:comparison_operator, [:gt, :ge]); end
+    def self.comp_lt;             new(:comparison_operator, [:lt, :le]); end
 
-    def self.if;             new(:function, :if);                  end
-    def self.round;          new(:function, :round);               end
-    def self.roundup;        new(:function, :roundup);             end
-    def self.rounddown;      new(:function, :rounddown);           end
-    def self.not;            new(:function, :not);                 end
+    def self.open;                new(:grouping, :open);                 end
+    def self.close;               new(:grouping, :close);                end
+    def self.comma;               new(:grouping, :comma);                end
+    def self.non_group;           new(:grouping).invert;                 end
+    def self.non_group_star;      new(:grouping).invert.star;            end
+    def self.non_close_plus;      new(:grouping, :close).invert.plus;    end
+    def self.arguments;           (value | comma).plus;                  end
+
+    def self.if;                  new(:function, :if);                   end
+    def self.round;               new(:function, :round);                end
+    def self.roundup;             new(:function, :roundup);              end
+    def self.rounddown;           new(:function, :rounddown);            end
+    def self.not;                 new(:function, :not);                  end
 
     def self.method_missing(name, *args, &block)
       new(:function, name)
